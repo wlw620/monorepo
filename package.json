@@ -10,7 +10,8 @@
     "create": "elden create",
     "build": "elden build",
     "dev": "elden dev",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "version":"changeset version"
   },
   "dependencies": {
     "@tuaner/elden-scripts": "workspace:^0.0.0"
