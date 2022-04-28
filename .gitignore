@@ -1,0 +1,19 @@
+# Directories
+/node_modules
+/coverage
+/build
+/static
+/dist
+
+# Files
+.idea/
+config/local.json
+*.log
+webpack-assets.json
+webpack-stats.json
+.tmp
+*.swp
+.DS_Store
+.tern-port
+.eslintcache
+.env
