@@ -1,5 +1,4 @@
 # dependencies
-node_modules
 .pnp
 .pnp.js
 
@@ -28,3 +27,4 @@ yarn-error.log*
 
 # turbo
 .turbo
+
