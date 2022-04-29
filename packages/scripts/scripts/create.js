@@ -4,19 +4,20 @@ const execa = require('execa')
 const glob = require('glob')
 const chalk = require('chalk')
 const _ = require('lodash')
-const {Input, Select} = require('enquirer')
+const { Input, Select } = require('enquirer')
+const { processCancel } = require('./common')
 
 const templatePath = path.resolve(__dirname, `../templates`)
 const appPath = path.resolve(process.cwd(), `./apps`)
 
 // lodash template compiled
-const createCompiled = content => {
+const createCompiled = (content) => {
   _.templateSettings.interpolate = /<%=([\s\S]+?)%>/g
   return _.template(content)
 }
 
-const install = appName => {
-  const {name} = fs.readJSONSync(path.resolve(appPath, appName, 'package.json'))
+const install = (appName) => {
+  const { name } = fs.readJSONSync(path.resolve(appPath, appName, 'package.json'))
   execa.sync('pnpm', ['install', '--filter', `${name}`], {
     stdio: 'inherit',
   })
@@ -34,27 +35,22 @@ const create = (appName, template) => {
     const content = fs.readFileSync(file, 'utf-8')
     const compiled = createCompiled(content)
 
-    fs.outputFileSync(dist, compiled({name: appName}), {
+    fs.outputFileSync(dist, compiled({ name: appName }), {
       encoding: 'utf-8',
       flag: 'w+',
     })
   }
-  // 安装依赖
+
   install(appName)
 }
 
-const checkAppName = appName => {
+const checkAppName = (appName) => {
   if (!appName) {
     console.log(chalk.bold.red('Please specify the project name'))
     process.exit()
   }
-
-  if (glob.sync('*', {cwd: appPath}).includes(appName)) {
-    console.log(
-      chalk.bold.red(
-        `The directory ${appName} contains files that could conflict`
-      )
-    )
+  if (glob.sync('*', { cwd: appPath }).includes(appName)) {
+    console.log(chalk.bold.red(`The directory ${appName} contains files that could conflict`))
     process.exit()
   }
 }
@@ -64,16 +60,20 @@ const checkAppName = appName => {
   const appName = await new Input({
     message: chalk.bold.green('Please enter a name for the application'),
     initial: '',
-  }).run()
+  })
+    .run()
+    .catch(processCancel)
 
   checkAppName(appName)
 
   const templateName = await new Select({
     name: 'template',
     message: chalk.bold.green('Please pick a template'),
-    choices: glob.sync('*', {cwd: templatePath}),
-  }).run()
+    choices: glob.sync('*', { cwd: templatePath }),
+  })
+    .run()
+    .catch(processCancel)
 
-  // 创建项目文件
+  // 创建项目
   create(appName, path.resolve(templatePath, templateName))
 })()

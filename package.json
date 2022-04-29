@@ -11,18 +11,26 @@
     "build": "elden build",
     "dev": "elden dev",
     "changeset": "changeset",
-    "version":"changeset version"
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "release": "pnpm run build && pnpm run changeset && pnpm run changeset:version"
   },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "dependencies": {
     "@tuaner/elden-scripts": "workspace:^0.0.0"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.4",
     "@changesets/cli": "^2.22.0",
+    "eslint": "^8.14.0",
     "prettier": "^2.6.2",
+    "turbo": "^1.2.5",
     "typescript": "^4.6.3"
   },
   "engines": {
     "node": ">=16.13"
-  }
+  },
+  "packageManager": "pnpm@6.32.10"
 }

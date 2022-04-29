@@ -3,14 +3,20 @@ const fs = require('fs-extra')
 const execa = require('execa')
 const glob = require('glob')
 const chalk = require('chalk')
-const _ = require('lodash')
-const {Input, Select} = require('enquirer')
+const { Select } = require('enquirer')
+const { processCancel } = require('./common')
 
 const appPath = path.resolve(process.cwd(), `./apps`)
 
-const runDev = appName => {
-  const {name} = fs.readJSONSync(path.resolve(appPath, appName, 'package.json'))
-  execa.sync('pnpm', ['run', 'start', '--filter', `${name}`], {
+const runDev = (appName) => {
+  if (appName === 'all') {
+    execa.sync('turbo', ['run', 'dev', '--parallel'], {
+      stdio: 'inherit',
+    })
+    return
+  }
+  const { name } = fs.readJSONSync(path.resolve(appPath, appName, 'package.json'))
+  execa.sync('turbo', ['run', 'dev', '--parallel', `--filter=${name}`], {
     stdio: 'inherit',
   })
 }
@@ -19,8 +25,10 @@ const runDev = appName => {
   const appName = await new Select({
     name: 'template',
     message: chalk.bold.green('Select a app to start'),
-    choices: glob.sync('*', {cwd: appPath}),
-  }).run()
+    choices: ['all...', ...glob.sync('*', { cwd: appPath })],
+  })
+    .run()
+    .catch(processCancel)
 
   runDev(appName)
 })()

@@ -1,6 +1,6 @@
-# @tuaner/elden-complier
+# @tuaner/elden-config
 
-## 1.0.0
+## 2.0.0
 
 ### Major Changes
 
@@ -10,4 +10,4 @@
 
 ### Major Changes
 
-- init
+- release test
