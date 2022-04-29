@@ -1,6 +1,8 @@
 # dependencies
 .pnp
 .pnp.js
+node_modules
+*node_modules/*
 
 # testing
 coverage
@@ -27,4 +29,4 @@ yarn-error.log*
 
 # turbo
 .turbo
-
+node_modules
